@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: final_landing
+    database: chasegibbons
+    schema: samssubs_source_sams_subs
+    tables:
+      - name: customer
+      - name: employee
+      - name: orderdetails
+      - name: '"ORDER"'
+      - name: product
+      - name: sandwich
+      - name: store

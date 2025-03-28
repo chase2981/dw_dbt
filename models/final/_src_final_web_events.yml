@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: final_landing_web
+    database: chasegibbons
+    schema: samssubs_source
+    tables:
+      - name: web_traffic_events

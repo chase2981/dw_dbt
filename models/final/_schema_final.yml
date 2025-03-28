@@ -1,0 +1,95 @@
+version: 2
+
+models:
+  - name: fact_order_details
+    description: >
+      Fact table capturing individual order line transactions including quantity, price, 
+      earned points, and links to related dimension tables (customer, store, product, employee, date).
+    columns:
+      - name: date_key
+        tests: [not_null, relationships: {to: ref('final_dim_date'), field: date_key}]
+      - name: productkey
+        tests: [not_null, relationships: {to: ref('final_dim_product'), field: productkey}]
+      - name: store_key
+        tests: [not_null, relationships: {to: ref('final_dim_store'), field: store_key}]
+      - name: employeekey
+        tests: [not_null, relationships: {to: ref('final_dim_employee'), field: employeekey}]
+      - name: customer_key
+        tests: [not_null, relationships: {to: ref('final_dim_customer'), field: customer_key}]
+      - name: order_key
+        tests: [not_null]
+      - name: orderlineqty
+      - name: orderlineprice
+      - name: orderline_total
+      - name: pointsearned
+
+  - name: fact_web_events
+    description: >
+      Fact table tracking web interactions such as page views and other events, 
+      connected to event, source, and page dimensions.
+    columns:
+      - name: date_key
+        tests: [not_null, relationships: {to: ref('final_dim_date'), field: date_key}]
+      - name: event_key
+        tests: [not_null, relationships: {to: ref('final_dim_web_event'), field: event_key}]
+      - name: source_key
+        tests: [not_null, relationships: {to: ref('final_dim_web_source'), field: source_key}]
+      - name: page_key
+        tests: [not_null, relationships: {to: ref('final_dim_web_page'), field: page_key}]
+      - name: countofinteractions
+
+  - name: final_dim_date
+    description: Date dimension table with calendar breakdowns.
+    columns:
+      - name: date_key
+        tests: [unique, not_null]
+      - name: date_day
+
+  - name: final_dim_product
+    description: Product dimension with descriptive attributes about sandwiches/products.
+    columns:
+      - name: productkey
+        tests: [unique, not_null]
+      - name: productid
+
+  - name: final_dim_store
+    description: Store dimension with address and location information.
+    columns:
+      - name: store_key
+        tests: [unique, not_null]
+      - name: storeid
+
+  - name: final_dim_employee
+    description: Employee dimension with employee metadata.
+    columns:
+      - name: employeekey
+        tests: [unique, not_null]
+      - name: employeeid
+
+  - name: final_dim_customer
+    description: Customer dimension with name and contact details.
+    columns:
+      - name: customer_key
+        tests: [unique, not_null]
+      - name: customerid
+
+  - name: final_dim_web_event
+    description: Web event types like 'page_view', 'click', etc.
+    columns:
+      - name: event_key
+        tests: [unique, not_null]
+      - name: event_name
+
+  - name: final_dim_web_source
+    description: Marketing or referral source (e.g. Google, Instagram).
+    columns:
+      - name: source_key
+        tests: [unique, not_null]
+      - name: sourcename
+
+  - name: final_dim_web_page
+    description: URLs or page identifiers tracked in web events.
+    columns:
+      - name: page_key
+        tests: [unique, not_null]
+      - name: sourcename
