@@ -13,7 +13,7 @@ with page_data as (
 deduplicated as (
     select distinct
         {{ dbt_utils.generate_surrogate_key(['page_url']) }} as page_key,
-        page_url as source_name
+        page_url as page_url
     from page_data
 )
 
