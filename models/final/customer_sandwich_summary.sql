@@ -6,7 +6,8 @@ with order_agg as (
         cu.customerfname || ' ' || cu.customerlname as customer_name,
         pr.productname,
         sum(f.orderlineqty * pr.length) as inches_eaten,
-        count(*) as total_orders
+        count(*) as total_orders,
+        sum(f.pointsearned) as total_points_earned
     from {{ ref('fact_order_details') }} f
     join {{ ref('final_dim_customer') }} cu on f.customer_key = cu.customer_key
     join {{ ref('final_dim_product') }} pr on f.productkey = pr.productkey
@@ -25,7 +26,8 @@ favorite as (
         customer_name,
         productname as favorite_sandwich,
         sum(inches_eaten) over (partition by customer_key) as total_inches_eaten,
-        sum(total_orders) over (partition by customer_key) as total_orders
+        sum(total_orders) over (partition by customer_key) as total_orders,
+        sum(total_points_earned) over (partition by customer_key) as total_points_earned
     from ranked
     where rn = 1
 ),
@@ -37,10 +39,11 @@ final as (
         f.favorite_sandwich,
         f.total_inches_eaten,
         f.total_orders,
+        f.total_points_earned,
         max(o.date_key) as last_order_date
     from favorite f
     join {{ ref('fact_order_details') }} o on f.customer_key = o.customer_key
-    group by f.customer_key, f.customer_name, f.favorite_sandwich, f.total_inches_eaten, f.total_orders
+    group by f.customer_key, f.customer_name, f.favorite_sandwich, f.total_inches_eaten, f.total_orders, f.total_points_earned
 )
 
 select * from final
